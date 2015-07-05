@@ -12,22 +12,22 @@ namespace TextAdventureExperiment.Actions
         public Action IfAction { get; set; }
         public Action ElseAction { get; set; }
 
-        public new IOManager IO
+        public new Player Player
         {
             get
             {
-                return base.IO;
+                return base.Player;
             }
             set
             {
-                base.IO = value;
-                if (Condition != null)  Condition.IO = value;
-                if (IfAction != null)   IfAction.IO = value;
-                if (ElseAction != null) ElseAction.IO = value;
+                base.Player = value;
+                if (Condition != null)  Condition.Player = value;
+                if (IfAction != null)   IfAction.Player = value;
+                if (ElseAction != null) ElseAction.Player = value;
             }
         }
 
-        public IfElseAction(IOManager io) : base(io) { }
+        public IfElseAction(Player player) : base(player) { }
 
         public override bool Execute()
         {
@@ -46,15 +46,15 @@ namespace TextAdventureExperiment.Actions
             int ret = 0;
             bool elseDetected = false;
 
-            Condition = new GroupAction(IO);      // empty group actions as default (execute will do nothing)
-            IfAction = new GroupAction(IO);
-            ElseAction = new GroupAction(IO);
+            Condition = new GroupAction(Player);      // empty group actions as default (execute will do nothing)
+            IfAction = new GroupAction(Player);
+            ElseAction = new GroupAction(Player);
 
             for (int i = ret; i < commands.Length; i++ )
             {
                 if (commands[i].ToUpper() == "THEN")
                 {
-                    Condition = ActionFactory.GetAction(IO, commands.Take(i).ToArray());
+                    Condition = ActionFactory.GetAction(Player, commands.Take(i).ToArray());
                     ret = i+1;
                     break;
                 }
@@ -64,7 +64,7 @@ namespace TextAdventureExperiment.Actions
             {
                 if (commands[i].ToUpper() == "ELSE")
                 {
-                    IfAction = ActionFactory.GetAction(IO, commands.Take(i).Skip(ret).ToArray());
+                    IfAction = ActionFactory.GetAction(Player, commands.Take(i).Skip(ret).ToArray());
                     ret = i + 1;
                     elseDetected = true;
                     break;
@@ -77,11 +77,11 @@ namespace TextAdventureExperiment.Actions
                 {
                     if(elseDetected)
                     {
-                        ElseAction = ActionFactory.GetAction(IO, commands.Take(i).Skip(ret).ToArray());
+                        ElseAction = ActionFactory.GetAction(Player, commands.Take(i).Skip(ret).ToArray());
                     }
                     else
                     {
-                        IfAction = ActionFactory.GetAction(IO, commands.Take(i).Skip(ret).ToArray());
+                        IfAction = ActionFactory.GetAction(Player, commands.Take(i).Skip(ret).ToArray());
                     }
                     ret = i + 1;
                     elseDetected = true;
@@ -91,11 +91,11 @@ namespace TextAdventureExperiment.Actions
                 {
                     if (elseDetected)
                     {
-                        ElseAction = ActionFactory.GetAction(IO, commands.Skip(ret).ToArray());
+                        ElseAction = ActionFactory.GetAction(Player, commands.Skip(ret).ToArray());
                     }
                     else
                     {
-                        IfAction = ActionFactory.GetAction(IO, commands.Skip(ret).ToArray());
+                        IfAction = ActionFactory.GetAction(Player, commands.Skip(ret).ToArray());
                     }
                     ret = i + 1;
                     elseDetected = true;

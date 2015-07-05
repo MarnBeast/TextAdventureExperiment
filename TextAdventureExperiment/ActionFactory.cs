@@ -18,25 +18,25 @@ namespace TextAdventureExperiment
             set { m_ActionTypes = value; }
         }
 
-        public static Action GetAction(IOManager io, string actionText)
+        public static Action GetAction(Player player, string actionText)
         {
             //Regex regex = new Regex("[^\\s\"']+|\"([^\"]*)\"|'([^']*)'");   // splits on spaces except within quot
             Regex regex = new Regex("('.*?'|\".*?\"|\\S+)");
             string[] commands = regex.Split(actionText).Where(s => !String.IsNullOrWhiteSpace(s)).ToArray();
 
-            return GetAction(io, commands);
+            return GetAction(player, commands);
         }
 
-        public static Action GetAction(IOManager io, string[] commands)
+        public static Action GetAction(Player player, string[] commands)
         {
-            GroupAction root = new GroupAction(io);
+            GroupAction root = new GroupAction(player);
 
             if (commands != null && commands.Length > 0)
             {
                 int count = 0;
                 while (commands.Length > 0)
                 {
-                    Action action = GetAction(io, ref commands);
+                    Action action = GetAction(player, ref commands);
                     if (action != null)
                     {
                         // If we just parsed a two op action, set the Op1 value
@@ -56,7 +56,7 @@ namespace TextAdventureExperiment
             return root;
         }
 
-        public static Action GetAction(IOManager io, ref string[] commands)
+        public static Action GetAction(Player player, ref string[] commands)
         {
             Action ret = null;
 
@@ -67,7 +67,7 @@ namespace TextAdventureExperiment
                 {
                     case "SAY":
                         {
-                            SayAction sayAction = new SayAction(io);
+                            SayAction sayAction = new SayAction(player);
                             index++;
                             if (commands.Length > 1)
                             {
@@ -80,7 +80,7 @@ namespace TextAdventureExperiment
 
                     case "IF":
                         {
-                            IfElseAction ifAction = new IfElseAction(io);
+                            IfElseAction ifAction = new IfElseAction(player);
                             index++;
                             if (commands.Length > 1)
                             {
@@ -92,9 +92,9 @@ namespace TextAdventureExperiment
 
                     case "NOT":
                         {
-                            NotAction notAction = new NotAction(io);
+                            NotAction notAction = new NotAction(player);
                             commands = commands.Skip(1).ToArray();  // skip to next action
-                            Action opAction = GetAction(io, ref commands);
+                            Action opAction = GetAction(player, ref commands);
                             notAction.Op = opAction;
                             // no index increment, the ref is our increment
                             ret = notAction;
@@ -103,9 +103,9 @@ namespace TextAdventureExperiment
 
                     case "AND":
                         {
-                            AndAction andAction = new AndAction(io);
+                            AndAction andAction = new AndAction(player);
                             commands = commands.Skip(1).ToArray();
-                            Action op2Action = GetAction(io, ref commands);
+                            Action op2Action = GetAction(player, ref commands);
                             andAction.Op2 = op2Action;
                             // no index increment, the ref is our increment
                             ret = andAction;
@@ -114,9 +114,9 @@ namespace TextAdventureExperiment
 
                     case "OR":
                         {
-                            OrAction orAction = new OrAction(io);
+                            OrAction orAction = new OrAction(player);
                             commands = commands.Skip(1).ToArray();
-                            Action op2Action = GetAction(io, ref commands);
+                            Action op2Action = GetAction(player, ref commands);
                             orAction.Op2 = op2Action;
                             // no index increment, the ref is our increment
                             ret = orAction;

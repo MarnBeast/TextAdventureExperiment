@@ -6,8 +6,17 @@ using System.Threading.Tasks;
 
 namespace TextAdventureExperiment
 {
-    class Item
+    public class Item
     {
+        public bool Hidden { get; set; }
+        public List<Command> Commands { get; set; }
+        public List<CustomAction> CustomActions { get; set; }
+
+        public Item()
+        {
+
+        }
+
 
     }
 }

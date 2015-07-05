@@ -8,11 +8,11 @@ namespace TextAdventureExperiment
 {
     public abstract class Action
     {
-        public IOManager IO { get; set; }
+        public Player Player { get; set; }
 
-        public Action(IOManager io)
+        public Action(Player player)
         {
-            IO = io;
+            Player = player;
         }
 
         public abstract bool Execute();

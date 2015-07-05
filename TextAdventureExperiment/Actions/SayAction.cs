@@ -29,18 +29,20 @@ namespace TextAdventureExperiment.Actions
             }
         }
 
-        public SayAction(IOManager io) : base(io)
+        public SayAction(Player player)
+            : base(player)
         {
         }
 
-        public SayAction(IOManager io, string message) : base(io)
+        public SayAction(Player player, string message)
+            : base(player)
         {
             m_message = message;
         }
 
         override public bool Execute()
         {
-            IO.Write(m_message);
+            Player.IO.Write(m_message);
             return true;
         }
     }

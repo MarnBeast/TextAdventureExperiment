@@ -13,11 +13,13 @@ namespace TextAdventureExperiment
         static void Main(string[] args)
         {
             IOManager io = new ConsoleIOManager();
+            Player player = new Player(io);
+
             while (true)
             {
                 String text = io.Read();
                 
-                Action group = ActionFactory.GetAction(io, text);
+                Action group = ActionFactory.GetAction(player, text);
 
                 group.Execute();
 

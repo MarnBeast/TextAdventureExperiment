@@ -9,7 +9,7 @@ namespace TextAdventureExperiment.Actions
     class OrAction : TwoOpAction
     {
 
-        public OrAction(IOManager io) : base(io) { }
+        public OrAction(Player player) : base(player) { }
 
         public override bool Execute()
         {

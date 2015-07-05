@@ -8,7 +8,8 @@ namespace TextAdventureExperiment.Actions
 {
     class NotAction : Action
     {
-        public NotAction(IOManager io) : base(io)
+        public NotAction(Player player)
+            : base(player)
         { }
 
         public Action Op { get; set; }

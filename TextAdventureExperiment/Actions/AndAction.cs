@@ -8,7 +8,7 @@ namespace TextAdventureExperiment.Actions
 {
     class AndAction : TwoOpAction
     {
-        public AndAction(IOManager io) : base(io) { }
+        public AndAction(Player player) : base(player) { }
 
         public override bool Execute()
         {

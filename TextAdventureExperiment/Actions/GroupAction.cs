@@ -9,18 +9,18 @@ namespace TextAdventureExperiment.Actions
     class GroupAction : Action
     {
 
-        public new IOManager IO
+        public new Player Player
         { 
             get
             {
-                return base.IO;
+                return base.Player;
             }
             set
             {
-                base.IO = value;
+                base.Player = value;
                 foreach(Action action in Actions)
                 {
-                    action.IO = value;
+                    action.Player = value;
                 }
             }
         }
@@ -31,7 +31,8 @@ namespace TextAdventureExperiment.Actions
             private set;
         }
 
-        public GroupAction(IOManager io) : base(io)
+        public GroupAction(Player player)
+            : base(player)
         {
             Actions = new List<Action>();
         }
