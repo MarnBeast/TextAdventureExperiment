@@ -54,7 +54,7 @@ namespace TextAdventureExperiment.Actions
             {
                 if (commands[i].ToUpper() == "THEN")
                 {
-                    Condition = ActionFactory.GetAction(Player, commands.Take(i).ToArray());
+                    Condition = Player.Inventory.GetAction(commands.Take(i).ToArray());
                     ret = i+1;
                     break;
                 }
@@ -64,7 +64,7 @@ namespace TextAdventureExperiment.Actions
             {
                 if (commands[i].ToUpper() == "ELSE")
                 {
-                    IfAction = ActionFactory.GetAction(Player, commands.Take(i).Skip(ret).ToArray());
+                    IfAction = Player.Inventory.GetAction(commands.Take(i).Skip(ret).ToArray());
                     ret = i + 1;
                     elseDetected = true;
                     break;
@@ -77,11 +77,11 @@ namespace TextAdventureExperiment.Actions
                 {
                     if(elseDetected)
                     {
-                        ElseAction = ActionFactory.GetAction(Player, commands.Take(i).Skip(ret).ToArray());
+                        ElseAction = Player.Inventory.GetAction(commands.Take(i).Skip(ret).ToArray());
                     }
                     else
                     {
-                        IfAction = ActionFactory.GetAction(Player, commands.Take(i).Skip(ret).ToArray());
+                        IfAction = Player.Inventory.GetAction(commands.Take(i).Skip(ret).ToArray());
                     }
                     ret = i + 1;
                     elseDetected = true;
@@ -91,11 +91,11 @@ namespace TextAdventureExperiment.Actions
                 {
                     if (elseDetected)
                     {
-                        ElseAction = ActionFactory.GetAction(Player, commands.Skip(ret).ToArray());
+                        ElseAction = Player.Inventory.GetAction(commands.Skip(ret).ToArray());
                     }
                     else
                     {
-                        IfAction = ActionFactory.GetAction(Player, commands.Skip(ret).ToArray());
+                        IfAction = Player.Inventory.GetAction(commands.Skip(ret).ToArray());
                     }
                     ret = i + 1;
                     elseDetected = true;

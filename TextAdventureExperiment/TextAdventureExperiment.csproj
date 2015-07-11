@@ -41,20 +41,26 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ActionFactory.cs" />
     <Compile Include="Actions\Action.cs" />
+    <Compile Include="Actions\GiveAction.cs" />
+    <Compile Include="Actions\GoAction.cs" />
+    <Compile Include="Actions\HasAction.cs" />
     <Compile Include="Actions\OrAction.cs" />
     <Compile Include="Actions\AndAction.cs" />
     <Compile Include="Actions\GroupAction.cs" />
     <Compile Include="Actions\IfElseAction.cs" />
     <Compile Include="Actions\NotAction.cs" />
     <Compile Include="Actions\SayAction.cs" />
+    <Compile Include="Actions\TakeAction.cs" />
     <Compile Include="Actions\TwoOpAction.cs" />
+    <Compile Include="Adventure.cs" />
     <Compile Include="Command.cs" />
     <Compile Include="CustomAction.cs" />
+    <Compile Include="Inventory.cs" />
     <Compile Include="IO\ConsoleIOManager.cs" />
     <Compile Include="IO\IOManager.cs" />
-    <Compile Include="Item.cs" />
+    <Compile Include="Items\CoreItem.cs" />
+    <Compile Include="Items\Item.cs" />
     <Compile Include="Player.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

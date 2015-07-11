@@ -25,6 +25,7 @@ namespace TextAdventureExperiment.Actions
                 {
                     value = value.Substring(0, value.Length - 1);
                 }
+                value = value.Replace("\\", String.Empty);
                 m_message = value; 
             }
         }

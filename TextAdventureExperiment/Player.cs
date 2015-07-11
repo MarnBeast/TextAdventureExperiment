@@ -3,13 +3,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using TextAdventureExperiment.Actions;
 using TextAdventureExperiment.IO;
 
 namespace TextAdventureExperiment
 {
     public class Player
     {
-        public List<Item> Inventory { get; set; }
+        public Inventory Inventory { get; set; }
 
         public IOManager IO { get; set; }
 
@@ -18,6 +19,7 @@ namespace TextAdventureExperiment
 
         public Player(IOManager io)
         {
+            Inventory = new Inventory(this);
             IO = io;
             if(IO == null)
             {
@@ -25,14 +27,13 @@ namespace TextAdventureExperiment
             }
         }
 
-        /// <summary>
-        /// When passed an item, this method returns all custom actions included within and below this item.
-        /// </summary>
-        /// <param name="item"></param>
-        /// <returns></returns>
-        public List<KeyValuePair<String, Action>> GetCustomActions(Item item)
+
+        public Adventure Adventure { get; set; }
+
+        public void BeginAdventure(Adventure adventure)
         {
-            return null;
+            Adventure = adventure;
+            adventure.Start(this);
         }
     }
 }

@@ -22,10 +22,10 @@ namespace TextAdventureExperiment.Actions
             }
         }
 
-
-        public TwoOpAction(Player player) : base(player) { }
-
         public Action Op1 { get; set; }
         public Action Op2 { get; set; }
+
+
+        public TwoOpAction(Player player) : base(player) { }
     }
 }
