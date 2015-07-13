@@ -12,12 +12,11 @@ namespace TextAdventureExperiment.Actions
             : base(player)
         { }
 
-        public Action Op { get; set; }
+        public bool Op { get; set; }
 
         public override bool Execute()
         {
-            if (Op == null) return false;
-            return !Op.Execute();
+            return !Op;
         }
     }
 }

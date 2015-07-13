@@ -8,9 +8,9 @@ namespace TextAdventureExperiment.Actions
 {
     class IfElseAction : Action
     {
-        public Action Condition { get; set; }
-        public Action IfAction { get; set; }
-        public Action ElseAction { get; set; }
+        public String[] Condition { get; set; }
+        public String[] IfCommands { get; set; }
+        public String[] ElseCommands { get; set; }
 
         public new Player Player
         {
@@ -21,9 +21,6 @@ namespace TextAdventureExperiment.Actions
             set
             {
                 base.Player = value;
-                if (Condition != null)  Condition.Player = value;
-                if (IfAction != null)   IfAction.Player = value;
-                if (ElseAction != null) ElseAction.Player = value;
             }
         }
 
@@ -31,13 +28,13 @@ namespace TextAdventureExperiment.Actions
 
         public override bool Execute()
         {
-            if(Condition.Execute())
+            if(Player.Inventory.ParseActions(Condition))
             {
-                return IfAction.Execute();
+                return Player.Inventory.ParseActions(IfCommands);
             }
             else
             {
-                return ElseAction.Execute();
+                return Player.Inventory.ParseActions(ElseCommands);
             }
         }
 
@@ -45,63 +42,119 @@ namespace TextAdventureExperiment.Actions
         {
             int ret = 0;
             bool elseDetected = false;
+            int conditionStart = 0;
+            int conditionEnd = 0;
+            int ifStart = 0;
+            int ifEnd = 0;
+            int elseStart = 0;
+            int elseEnd = 0;
 
-            Condition = new GroupAction(Player);      // empty group actions as default (execute will do nothing)
-            IfAction = new GroupAction(Player);
-            ElseAction = new GroupAction(Player);
+            int innerIfCount = 0;
+            int innerThenCount = 0;
 
             for (int i = ret; i < commands.Length; i++ )
             {
+                if (commands[i].ToUpper() == "IF")
+                {
+                    innerIfCount++;
+                    continue;
+                }
                 if (commands[i].ToUpper() == "THEN")
                 {
-                    Condition = Player.Inventory.GetAction(commands.Take(i).ToArray());
-                    ret = i+1;
-                    break;
-                }
-            }
-
-            for (int i = ret; i < commands.Length; i++)
-            {
-                if (commands[i].ToUpper() == "ELSE")
-                {
-                    IfAction = Player.Inventory.GetAction(commands.Take(i).Skip(ret).ToArray());
-                    ret = i + 1;
-                    elseDetected = true;
-                    break;
-                }
-            }
-
-            for (int i = ret; i < commands.Length; i++)
-            {
-                if (commands[i].ToUpper() == "ENDIF")
-                {
-                    if(elseDetected)
+                    if (innerIfCount != innerThenCount)
                     {
-                        ElseAction = Player.Inventory.GetAction(commands.Take(i).Skip(ret).ToArray());
+                        innerThenCount++;
                     }
                     else
                     {
-                        IfAction = Player.Inventory.GetAction(commands.Take(i).Skip(ret).ToArray());
+                        conditionStart = 0;
+                        conditionEnd = i;
+                        ret = i + 1;
+                        break;
                     }
-                    ret = i + 1;
-                    elseDetected = true;
-                    break;
+                }
+            }
+
+            innerIfCount = 0;
+            int innerElseCount = 0;
+
+            for (int i = ret; i < commands.Length; i++)
+            {
+                if (commands[i].ToUpper() == "IF")
+                {
+                    innerIfCount++;
+                    continue;
+                }
+                if (commands[i].ToUpper() == "ELSE")
+                {
+                    if (innerIfCount != innerElseCount)
+                    {
+                        innerElseCount++;
+                    }
+                    else
+                    {
+                        ifStart = ret;
+                        ifEnd = i;
+                        ret = i + 1;
+                        elseDetected = true;
+                        break;
+                    }
+                }
+            }
+
+
+            innerIfCount = 0;
+            int innerEndIfCount = 0;
+
+            for (int i = ret; i < commands.Length; i++)
+            {
+                if (commands[i].ToUpper() == "IF")
+                {
+                    innerIfCount++;
+                    continue;
+                }
+                if (commands[i].ToUpper() == "ENDIF")
+                {
+                    if (innerIfCount != innerEndIfCount)
+                    {
+                        innerEndIfCount++;
+                    }
+                    else
+                    {
+                        if (elseDetected)
+                        {
+                            elseStart = ret;
+                            elseEnd = i;
+                        }
+                        else
+                        {
+                            ifStart = ret;
+                            ifEnd = i;
+                        }
+                        ret = i + 1;
+                        break;
+                    }
                 }
                 else if (i == commands.Length - 1)
                 {
                     if (elseDetected)
                     {
-                        ElseAction = Player.Inventory.GetAction(commands.Skip(ret).ToArray());
+                        elseStart = ret;
+                        elseEnd = i + 1;
                     }
                     else
                     {
-                        IfAction = Player.Inventory.GetAction(commands.Skip(ret).ToArray());
+                        ifStart = ret;
+                        ifEnd = i + 1;
                     }
                     ret = i + 1;
-                    elseDetected = true;
                     break;
                 }
             }
+
+            Condition = commands.Take(conditionEnd).Skip(conditionStart).ToArray();
+            IfCommands =  commands.Take(ifEnd).Skip(ifStart).ToArray();
+            ElseCommands = commands.Take(elseEnd).Skip(elseStart).ToArray();
             
             return ret;
         }

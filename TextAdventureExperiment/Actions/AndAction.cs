@@ -12,20 +12,7 @@ namespace TextAdventureExperiment.Actions
 
         public override bool Execute()
         {
-            bool op1 = false;
-            bool op2 = false;
-
-            if(Op1 != null)
-            {
-                op1 = Op1.Execute();
-            }
-
-            if(Op2 != null)
-            {
-                op2 = Op2.Execute();
-            }
-
-            return op1 && op2;
+            return Op1 && Op2;
         }
     }
 }

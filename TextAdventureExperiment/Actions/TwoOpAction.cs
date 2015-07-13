@@ -17,13 +17,11 @@ namespace TextAdventureExperiment.Actions
             set
             {
                 base.Player = value;
-                if (Op1 != null) Op1.Player = value;
-                if (Op2 != null) Op2.Player = value;
             }
         }
 
-        public Action Op1 { get; set; }
-        public Action Op2 { get; set; }
+        public bool Op1 { get; set; }
+        public bool Op2 { get; set; }
 
 
         public TwoOpAction(Player player) : base(player) { }

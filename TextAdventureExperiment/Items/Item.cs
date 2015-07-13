@@ -67,9 +67,9 @@ namespace TextAdventureExperiment
         /// <param name="commands">A string of action commands to be parsed in order. This should contain quoted strings, custom action handles, 
         /// and or base action handles (SAY, GIVE, IF, etc).</param>
         /// <returns>The action built from the commands array.</returns>
-        virtual public Action GetAction(Player player, ref string[] commands)
+        virtual public bool DoAction(Player player, ref string[] commands, ref bool lastAction)
         {
-            Action ret = null;
+            bool ret = false;
 
             if (commands != null && commands.Length > 0)
             {
@@ -79,10 +79,11 @@ namespace TextAdventureExperiment
                     {
                         int paramCount = CountParamMarkers(customAction.ActionText);
                         commands = commands.Skip(1).ToArray();
-                        ret = player.Inventory.GetAction(
+                        lastAction = player.Inventory.ParseActions(
                             customAction.ActionText, 
                             this, 
                             commands.Take(paramCount).ToArray());
+                        ret = true;
                         break;
                     }
                 }

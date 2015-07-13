@@ -59,10 +59,9 @@ namespace TextAdventureExperiment
 
 
 
-        public Action GetCommandAction(string commandString)
+        public bool DoCommandAction(string commandString)
         {
-            Action ret = null;
-
+            bool ret = false;
             List<Item> items = m_items.ToList<Item>();
 
             Command command =
@@ -73,13 +72,9 @@ namespace TextAdventureExperiment
 
             if(command != null)
             {
-                ret = GetAction(command.ActionText);
+                ret = ParseActions(command.ActionText);
             }
 
-            if(ret == null)
-            {
-                ret = new GroupAction(m_player);
-            }
             return ret;
         }
 
@@ -95,7 +90,7 @@ namespace TextAdventureExperiment
         /// indicating the order in which the the replacements should be used.</param>
         /// <param name="replacements">Replacement strings that should be used in place of the {#} markers.</param>
         /// <returns>The action built from the action script.</returns>
-        public Action GetAction(string actionScript, Item caller = null, params string[] replacements)
+        public bool ParseActions(string actionScript, Item caller = null, params string[] replacements)
         {
 
             Regex regex = new Regex("('.*?[^\\\\]'|\".*?[^\\\\]\"|\\S+)");        // splits on spaces except within quotes (' or ") and allows for quotes to be escaped       // ('.*?[^\\]'|".*?[^\\]"|\S+)   unescaped regex
@@ -103,7 +98,7 @@ namespace TextAdventureExperiment
             
             commands = Item.ReplaceParamMarkers(commands, replacements);
 
-            return GetAction(commands, caller);
+            return ParseActions(commands, caller);
         }
 
         /// <summary>
@@ -117,9 +112,9 @@ namespace TextAdventureExperiment
         /// and or base action handles (SAY, GIVE, IF, etc). It may also include {#} if replacements are provided, where # is a number
         /// indicating the order in which the the replacements should be used.</param>
         /// <returns>The action built from the commands array.</returns>
-        public Action GetAction(string[] commands, Item caller = null)
+        public bool ParseActions(string[] commands, Item caller = null)
         {
-            GroupAction root = new GroupAction(m_player);
+            bool lastAction = true;
 
             if (commands != null && commands.Length > 0)
             {
@@ -132,20 +127,11 @@ namespace TextAdventureExperiment
                         items = items.Skip(items.IndexOf(caller) + 1).ToList<Item>();
                     }
 
-                    foreach (Item item in items)
+                    foreach (Item item  in items)
                     {
-                        Action action = item.GetAction(m_player, ref commands);
-                        if (action != null)
+                        bool actionPerformed = item.DoAction(m_player, ref commands, ref lastAction);
+                        if (actionPerformed)
                         {
-                            // If we just parsed a two op action, set the Op1 value
-                            if (action is TwoOpAction && root.Actions.Count > 0)
-                            {
-                                Action op1 = root.Actions.Last();
-                                root.Remove(op1);
-                                TwoOpAction twoAction = action as TwoOpAction;
-                                twoAction.Op1 = op1;
-                            }
-                            root.Add(action);
                             break;
                         }
                     }
@@ -154,7 +140,7 @@ namespace TextAdventureExperiment
                 }
             }
 
-            return root;
+            return lastAction;
         }
 
 
