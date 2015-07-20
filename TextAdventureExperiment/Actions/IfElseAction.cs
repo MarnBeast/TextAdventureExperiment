@@ -28,13 +28,13 @@ namespace TextAdventureExperiment.Actions
 
         public override bool Execute()
         {
-            if(Player.Inventory.ParseActions(Condition))
+            if(Player.Inventory.DoActions(Condition))
             {
-                return Player.Inventory.ParseActions(IfCommands);
+                return Player.Inventory.DoActions(IfCommands);
             }
             else
             {
-                return Player.Inventory.ParseActions(ElseCommands);
+                return Player.Inventory.DoActions(ElseCommands);
             }
         }
 

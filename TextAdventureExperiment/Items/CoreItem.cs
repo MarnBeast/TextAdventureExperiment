@@ -34,7 +34,7 @@ namespace TextAdventureExperiment.Items
         /// <returns>The action built from the commands array.</returns>
         override public bool DoAction(Player player, ref string[] commands, ref bool lastAction)
         {
-            Action ret = null;
+            Action action = null;
 
             if (commands != null && commands.Length > 0)
             {
@@ -50,7 +50,7 @@ namespace TextAdventureExperiment.Items
                                 sayAction.Message = commands[1];
                                 index++;
                             }
-                            ret = sayAction;
+                            action = sayAction;
                         }
                         break;
 
@@ -60,9 +60,9 @@ namespace TextAdventureExperiment.Items
                             index++;
                             if (commands.Length > 1)
                             {
-                                index = ifAction.Parse(commands.Skip(1).ToArray());
+                                index += ifAction.Parse(commands.Skip(1).ToArray());
                             }
-                            ret = ifAction;
+                            action = ifAction;
                         }
                         break;
 
@@ -70,10 +70,10 @@ namespace TextAdventureExperiment.Items
                         {
                             NotAction notAction = new NotAction(player);
                             commands = commands.Skip(1).ToArray();  // skip to next action
-                            DoAction(player, ref commands, ref lastAction);
+                            player.Inventory.DoAction(ref commands, ref lastAction);
                             notAction.Op = lastAction;
                             // no index increment, the ref is our increment
-                            ret = notAction;
+                            action = notAction;
                         }
                         break;
 
@@ -82,10 +82,10 @@ namespace TextAdventureExperiment.Items
                             AndAction andAction = new AndAction(player);
                             commands = commands.Skip(1).ToArray();
                             andAction.Op1 = lastAction;
-                            DoAction(player, ref commands, ref lastAction);
+                            player.Inventory.DoAction(ref commands, ref lastAction);
                             andAction.Op2 = lastAction;
                             // no index increment, the ref is our increment
-                            ret = andAction;
+                            action = andAction;
                         }
                         break;
 
@@ -94,10 +94,10 @@ namespace TextAdventureExperiment.Items
                             OrAction orAction = new OrAction(player);
                             commands = commands.Skip(1).ToArray();
                             orAction.Op1 = lastAction;
-                            DoAction(player, ref commands, ref lastAction);
+                            player.Inventory.DoAction(ref commands, ref lastAction);
                             orAction.Op2 = lastAction;
                             // no index increment, the ref is our increment
-                            ret = orAction;
+                            action = orAction;
                         }
                         break;
 
@@ -110,7 +110,12 @@ namespace TextAdventureExperiment.Items
                                 giveAction.ItemName = commands[1];
                                 index++;
                             }
-                            ret = giveAction;
+                            if (commands.Length > 3 && commands[2].ToUpper() == "TO")
+                            {
+                                giveAction.ToItemName = commands[3];
+                                index += 2;
+                            }
+                            action = giveAction;
                         }
                         break;
 
@@ -123,7 +128,12 @@ namespace TextAdventureExperiment.Items
                                 takeAction.ItemName = commands[1];
                                 index++;
                             }
-                            ret = takeAction;
+                            if (commands.Length > 3 && commands[2].ToUpper() == "FROM")
+                            {
+                                takeAction.FromItemName = commands[3];
+                                index += 2;
+                            }
+                            action = takeAction;
                         }
                         break;
 
@@ -136,7 +146,7 @@ namespace TextAdventureExperiment.Items
                                 hasAction.ItemName = commands[1];
                                 index++;
                             }
-                            ret = hasAction;
+                            action = hasAction;
                         }
                         break;
 
@@ -154,7 +164,7 @@ namespace TextAdventureExperiment.Items
                             {
                                 GoItemString = goAction.GiveItemName;
                             }
-                            ret = goAction;
+                            action = goAction;
                         }
                         break;
 
@@ -175,7 +185,7 @@ namespace TextAdventureExperiment.Items
                                     sayAction.Message = "You have no items.";
                                     groupAction.Add(sayAction);
                                 }
-                                ret = groupAction;
+                                action = groupAction;
                             }
                         break;
 
@@ -188,9 +198,9 @@ namespace TextAdventureExperiment.Items
                 commands = commands.Skip(index).ToArray();
             }
 
-            if (ret != null)
+            if (action != null)
             {
-                lastAction = ret.Execute();
+                lastAction = action.Execute();
                 return true;
             }
             else

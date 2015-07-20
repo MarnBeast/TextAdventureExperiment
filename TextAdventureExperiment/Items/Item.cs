@@ -44,11 +44,14 @@ namespace TextAdventureExperiment
         [XmlElement]
         public List<CustomAction> CustomActions { get; private set; }
 
+        public SortedSet<Item> HeldItems { get; private set; }
+
 
         public Item() 
         {
             Commands = new List<Command>();
             CustomActions = new List<CustomAction>();
+            HeldItems = new SortedSet<Item>();
         }
 
         public Item(string name, bool hidden) : this()
@@ -66,7 +69,7 @@ namespace TextAdventureExperiment
         /// The player trying to execute the action.</param>
         /// <param name="commands">A string of action commands to be parsed in order. This should contain quoted strings, custom action handles, 
         /// and or base action handles (SAY, GIVE, IF, etc).</param>
-        /// <returns>The action built from the commands array.</returns>
+        /// <returns>True if a matching custom action was found. False otherwise.</returns>
         virtual public bool DoAction(Player player, ref string[] commands, ref bool lastAction)
         {
             bool ret = false;
@@ -79,7 +82,7 @@ namespace TextAdventureExperiment
                     {
                         int paramCount = CountParamMarkers(customAction.ActionText);
                         commands = commands.Skip(1).ToArray();
-                        lastAction = player.Inventory.ParseActions(
+                        lastAction = player.Inventory.DoActions(     // parse the custom action's action text.
                             customAction.ActionText, 
                             this, 
                             commands.Take(paramCount).ToArray());
@@ -136,6 +139,7 @@ namespace TextAdventureExperiment
 
             return uniqueParamMarkers.Count;
         }
+
 
         public static string[] ReplaceParamMarkers(string[] commands, string[] replacements)
         {

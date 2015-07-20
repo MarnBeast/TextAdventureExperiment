@@ -173,7 +173,7 @@ namespace TextAdventureExperiment
 
             /* START SCRIPT */
 
-            adventure.StartScript = "GIVE 'Basics' GO 'Cottage' DESC";
+            adventure.StartScript = "GIVE 'Basics' GIVE 'Raw Fish' GIVE 'Caught a fish' GO 'Drawbridge' DESC";
 
             adventure.Start(player);
         }
