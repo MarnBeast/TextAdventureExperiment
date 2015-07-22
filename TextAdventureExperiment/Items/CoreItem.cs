@@ -146,6 +146,11 @@ namespace TextAdventureExperiment.Items
                                 hasAction.ItemName = commands[1];
                                 index++;
                             }
+                            if (commands.Length > 3 && commands[2].ToUpper() == "IN")
+                            {
+                                hasAction.InItemName = commands[3];
+                                index += 2;
+                            }
                             action = hasAction;
                         }
                         break;
