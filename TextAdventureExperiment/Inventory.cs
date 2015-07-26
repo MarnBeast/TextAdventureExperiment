@@ -56,6 +56,16 @@ namespace TextAdventureExperiment
             return m_items.Any(item => item.Name == itemName);
         }
 
+        public bool Has(string itemName, int itemCount)
+        {
+            return m_items.Count(item => item.Name == itemName) >= itemCount;
+        }
+
+        public bool Has(int itemCount)
+        {
+            return m_items.Count() >= itemCount;
+        }
+
 
         public static IEnumerable<Item> GetAllAndHeldItems(IEnumerable<Item> items)
         {
