@@ -118,7 +118,9 @@ namespace TextAdventureExperiment
 
         public int CompareTo(Item other)
         {
-            return other.AdventureID - this.AdventureID;
+            int result = other.AdventureID - this.AdventureID;
+            if (result == 0) result = 1;    // this allows duplicates while keeping everything sorted in our sorted set
+            return result;
         }
 
 
